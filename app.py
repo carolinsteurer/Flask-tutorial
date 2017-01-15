@@ -1,7 +1,10 @@
 #!flask/bin/python
 from flask import Flask, jsonify
+from flask import request
+from flask import abort
+from flask import make_response
 
-app = Flask(__name__)
+app = Flask(__name__) 
 
 tasks = [
     {
@@ -19,8 +22,6 @@ tasks = [
 ]
 
 
-from flask import request
-
 @app.route('/todo/api/v1.0/tasks', methods=['POST'])
 def create_task():
     if not request.json or not 'title' in request.json:
@@ -34,18 +35,12 @@ def create_task():
     tasks.append(task)
     return jsonify({'task': task}), 201
 
-
-from flask import abort
-
-@app.route('/todo/api/v1.0/tasks/<int:task_id>', methods=['GET'])
+@app.route('/todo/api/v1.0/tasks/<int:task_id>', methods=['GET']) 
 def get_task(task_id):
     task = [task for task in tasks if task['id'] == task_id]
     if len(task) == 0:
         abort(404)
-    return jsonify({'task': task[0]})
-
-    
-from flask import make_response
+    return jsonify({'task': task[0]}) 
 
 @app.errorhandler(404)
 def not_found(error):
@@ -75,8 +70,7 @@ def delete_task(task_id):
     if len(task) == 0:
         abort(404)
     tasks.remove(task[0])
-    return jsonify({'result': True})
-        
+    return jsonify({'result': True})       
 
 @app.route('/todo/api/v1.0/tasks', methods=['GET'])
 def get_tasks():
